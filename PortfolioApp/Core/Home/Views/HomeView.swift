@@ -14,6 +14,9 @@ struct HomeView: View {
     var body: some View {
         VStack {
             homeHeader
+            
+            SearchBarView(searchText: $vm.searchText)
+            
             coinListTitle
             
             if !showPortfolio {
@@ -35,6 +38,7 @@ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
             .environmentObject(dev.homeVM)
+            .preferredColorScheme(.dark)
     }
 }
 
@@ -88,6 +92,7 @@ extension HomeView {
         List {
             ForEach(vm.allCoins) { coin in
                 CoinRowView(coin: coin)
+                    .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
             }
         }
         .listStyle(PlainListStyle())
@@ -97,6 +102,7 @@ extension HomeView {
         List {
             ForEach(vm.portfolioCoins) { coin in
                 CoinRowView(coin: coin)
+                    .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
             }
         }
         .listStyle(PlainListStyle())
