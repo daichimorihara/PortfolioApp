@@ -9,14 +9,20 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var showPortfolio = false
+    @State private var showPortfolioEdit = false
+    @State private var showSettins = false
+    @State private var selectedCoin: CoinModel?
+    @State private var showDetail = false
     @EnvironmentObject var vm: HomeViewModel
     
     var body: some View {
         VStack {
+            NavigationLink(isActive: $showDetail,
+                           destination: { Text("FF") },
+                           label: { EmptyView() })
+            
             homeHeader
-            
             SearchBarView(searchText: $vm.searchText)
-            
             coinListTitle
             
             if !showPortfolio {
@@ -28,8 +34,9 @@ struct HomeView: View {
                 portfolioCoinsList
                     .transition(.move(edge: .trailing))
             }
-
-            
+        }
+        .sheet(isPresented: $showPortfolioEdit) {
+            PortfolioView()
         }
     }
 }
@@ -50,6 +57,9 @@ extension HomeView {
                 .frame(width: 40, height: 40)
                 .overlay(Circle().stroke().opacity(0.1))
                 .animation(.none, value: showPortfolio)
+                .onTapGesture {
+                    showPortfolio ? showPortfolioEdit.toggle() : showSettins.toggle()
+                }
             
             Spacer()
             Text(showPortfolio ? "Portfolio" : "Live Prices")
@@ -93,6 +103,9 @@ extension HomeView {
             ForEach(vm.allCoins) { coin in
                 CoinRowView(coin: coin)
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
+                    .onTapGesture {
+                        showDetail.toggle()
+                    }
             }
         }
         .listStyle(PlainListStyle())

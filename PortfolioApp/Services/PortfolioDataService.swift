@@ -21,6 +21,7 @@ class PortfolioDataService {
             if let error = error {
                 print("Failed to load Core Data \(error)")
             }
+            self.getPortfolio()
         }
     }
     
