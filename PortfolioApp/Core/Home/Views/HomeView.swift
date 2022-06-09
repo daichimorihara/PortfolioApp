@@ -14,15 +14,16 @@ struct HomeView: View {
     @State private var selectedCoin: CoinModel?
     @State private var showDetail = false
     @EnvironmentObject var vm: HomeViewModel
+    @FocusState var focusedField: Bool
     
     var body: some View {
         VStack {
             NavigationLink(isActive: $showDetail,
-                           destination: { Text("FF") },
+                           destination: { DetailLoadingView(coin: $selectedCoin) },
                            label: { EmptyView() })
             
             homeHeader
-            SearchBarView(searchText: $vm.searchText)
+            SearchBarView(searchText: $vm.searchText, focusedField: _focusedField)
             coinListTitle
             
             if !showPortfolio {
@@ -59,6 +60,8 @@ extension HomeView {
                 .animation(.none, value: showPortfolio)
                 .onTapGesture {
                     showPortfolio ? showPortfolioEdit.toggle() : showSettins.toggle()
+                    
+                    focusedField = false 
                 }
             
             Spacer()
@@ -105,6 +108,7 @@ extension HomeView {
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
                     .onTapGesture {
                         showDetail.toggle()
+                        selectedCoin = coin
                     }
             }
         }
@@ -116,6 +120,10 @@ extension HomeView {
             ForEach(vm.portfolioCoins) { coin in
                 CoinRowView(coin: coin)
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
+                    .onTapGesture {
+                        showDetail.toggle()
+                        selectedCoin = coin
+                    }
             }
         }
         .listStyle(PlainListStyle())
